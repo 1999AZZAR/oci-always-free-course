@@ -1,31 +1,72 @@
-# Modul 5: Setup Tailscale (Mesh VPN Private)
+# Modul 5: Setup Tailscale Mesh VPN
 
-Agar server kamu aman dari serangan bruteforce SSH dan bisa diakses seperti jaringan lokal, kita akan menggunakan **Tailscale**.
+Tailscale membuat koneksi peer-to-peer terenkripsi (WireGuard di bawahnya) antara semua perangkatmu. Setelah terpasang di server OCI dan laptop kamu, keduanya bisa saling berkomunikasi melalui IP internal (`100.x.x.x`) tanpa melewati internet publik.
 
-## Apa itu Tailscale?
-Tailscale membuat jaringan VPN private (Overlay) di atas koneksi internet biasa. Server OCI kamu akan mendapatkan IP internal (misal: `100.x.x.x`) yang hanya bisa diakses oleh perangkat yang kamu izinkan.
+Manfaat langsungnya: kamu bisa menutup semua port publik di Security List OCI, termasuk port 22 (SSH), dan tetap bisa mengakses server dengan aman.
 
-## Langkah Instalasi di Server OCI
-Setelah berhasil SSH ke server untuk pertama kali, jalankan perintah berikut:
+## Prasyarat
 
-1. **Install Tailscale**:
-   ```bash
-   curl -fsSL https://tailscale.com/install.sh | sh
-   ```
+- Instance OCI sudah berjalan (Modul 3).
+- Kamu sudah bisa SSH ke instance via IP publik (Modul 4).
+- Akun Tailscale gratis — daftar di [tailscale.com](https://tailscale.com) pakai Google atau GitHub.
 
-2. **Login & Hubungkan**:
-   ```bash
-   sudo tailscale up
-   ```
-   - Klik link yang muncul di terminal untuk autentikasi dengan akun Tailscale kamu (bisa pakai Google/GitHub).
+## Instalasi di Server OCI
 
-3. **Verifikasi**:
-   ```bash
-   tailscale ip -4
-   ```
-   Catat IP tersebut. Sekarang kamu bisa SSH ke server menggunakan IP Tailscale ini dari laptop kamu (yang juga sudah terinstall Tailscale).
+SSH ke server terlebih dahulu:
+```bash
+ssh -i ~/path/to/oracle_key.key ubuntu@<public-ip>
+```
 
-## Keuntungan Utama
-- Kamu bisa **menutup port 22 (SSH)** di Security List OCI (Ingress Rules).
-- Server tetap bisa diakses meskipun IP Publik OCI berubah atau tanpa IP Publik sekalipun.
-- Akses dashboard OpenClaw secara private tanpa mengekspos port web ke publik.
+Jalankan installer resmi Tailscale:
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+```
+
+Aktifkan Tailscale dengan fitur SSH bawaan (Tailscale SSH):
+```bash
+sudo tailscale up --ssh
+```
+
+Terminal akan menampilkan URL autentikasi. Buka URL tersebut di browser, login dengan akun Tailscale kamu, dan klik **Connect**. Selesai.
+
+Periksa IP Tailscale yang diberikan ke server:
+```bash
+tailscale ip -4
+```
+
+Catat IP ini (formatnya `100.x.x.x`). Ini adalah IP private server kamu di jaringan Tailscale.
+
+## Buka Port UDP 41641 di OCI (Opsional tapi Disarankan)
+
+Tailscale bisa beroperasi tanpa ini, tapi koneksinya akan melalui relay server (DERP) yang menambah latensi. Membuka port UDP 41641 memungkinkan koneksi direct peer-to-peer.
+
+Di OCI Console:
+1. Pergi ke **Networking** → **Virtual Cloud Networks** → klik VCN → **Security Lists**.
+2. Tambahkan Ingress Rule:
+   - **Source CIDR**: `0.0.0.0/0`
+   - **IP Protocol**: UDP
+   - **Destination Port Range**: `41641`
+3. Simpan.
+
+## Instalasi di Laptop/PC Kamu
+
+Download Tailscale untuk sistem operasi kamu dari [tailscale.com/download](https://tailscale.com/download) dan login dengan akun yang sama.
+
+Setelah terhubung, kamu bisa langsung SSH ke server menggunakan IP Tailscale:
+```bash
+ssh ubuntu@100.x.x.x
+```
+
+Jika kamu mengaktifkan Tailscale SSH (`--ssh` flag tadi), kamu bahkan tidak perlu menentukan private key secara manual — autentikasi dihandle oleh Tailscale identity kamu.
+
+## Keuntungan Tailscale SSH
+
+Dengan `--ssh` flag aktif, akses SSH dikontrol lewat **Tailscale Admin Console** di [login.tailscale.com/admin/acls](https://login.tailscale.com/admin/acls). Ini berarti:
+
+- Tidak perlu manage `~/.ssh/authorized_keys` secara manual.
+- Kamu bisa memberikan atau mencabut akses per user tanpa menyentuh server.
+- Semua akses tercatat di audit log Tailscale.
+
+## Langkah Berikutnya
+
+Setelah Tailscale berjalan dan kamu bisa SSH via IP `100.x.x.x`, lanjut ke [Modul 6](06_SECURE_SSH.md) untuk menutup port publik dan mengamankan akses sepenuhnya.

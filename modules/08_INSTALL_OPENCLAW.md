@@ -1,49 +1,116 @@
 # Modul 8: Instalasi OpenClaw Agent
 
-Sekarang kita akan menginstall "Otak" utama di server OCI kamu menggunakan **OpenClaw**.
+Modul ini menginstall OpenClaw dan mengkonfigurasinya agar berjalan sebagai service yang otomatis start setelah reboot.
 
-## Langkah Persiapan
-1. Pastikan Node.js dan Git sudah terinstall:
-   ```bash
-   sudo apt update
-   sudo apt install -y git nodejs npm
-   ```
-2. Install PM2 untuk menjaga agent tetap berjalan di background:
-   ```bash
-   sudo npm install -g pm2
-   ```
+## Prasyarat
 
-## Langkah Instalasi OpenClaw
-1. **Clone Repository**:
-   ```bash
-   git clone https://github.com/openclaw/openclaw.git
-   cd openclaw
-   ```
+Pastikan hal-hal berikut sudah tersedia di server:
+- Node.js terinstall via NVM (`node -v` harus menampilkan versi)
+- PM2 terinstall (`pm2 -v` harus merespons)
+- Git terinstall (`git --version` harus merespons)
+- API key dari provider AI yang ingin kamu pakai (OpenAI, Gemini, atau Anthropic)
 
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
+## 1. Clone Repository
 
-3. **Konfigurasi**:
-   Copy file contoh environment:
-   ```bash
-   cp .env.example .env
-   nano .env
-   ```
-   Isi API Key yang dibutuhkan (OpenAI/Gemini/Anthropic).
+```bash
+cd ~
+git clone https://github.com/openclaw/openclaw.git
+cd openclaw
+```
 
-4. **Jalankan via PM2**:
-   ```bash
-   pm2 start index.js --name "openclaw-agent"
-   pm2 save
-   pm2 startup
-   ```
+## 2. Install Dependencies
 
-## Verifikasi
-Cek status agent:
+```bash
+npm install
+```
+
+Proses ini bisa memakan beberapa menit tergantung jumlah dependency. Jika ada warning tentang `fsevents` atau modul lain yang tidak kompatibel dengan ARM, itu normal — module tersebut biasanya opsional dan hanya relevan untuk macOS.
+
+## 3. Konfigurasi
+
+Salin file environment contoh dan edit sesuai kebutuhan:
+```bash
+cp .env.example .env
+nano .env
+```
+
+Isi setidaknya nilai-nilai berikut:
+
+```
+# Pilih salah satu atau beberapa provider AI
+OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=AI...
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Port yang dipakai agent (default biasanya 3000)
+PORT=3000
+```
+
+Simpan dengan `Ctrl+O`, Enter, lalu keluar dengan `Ctrl+X`.
+
+Jangan commit file `.env` ke Git. Pastikan `.env` sudah ada di `.gitignore` — kalau belum, tambahkan:
+```bash
+echo ".env" >> .gitignore
+```
+
+## 4. Test Jalankan
+
+Sebelum didaftarkan ke PM2, coba jalankan manual dulu untuk memastikan tidak ada error:
+```bash
+node index.js
+```
+
+Jika ada error `Missing API key` atau `Module not found`, perbaiki dulu sebelum lanjut. Tekan `Ctrl+C` untuk keluar setelah tes berhasil.
+
+## 5. Jalankan via PM2
+
+```bash
+pm2 start index.js --name "openclaw"
+pm2 save
+```
+
+`pm2 save` menyimpan daftar proses yang berjalan ke disk, sehingga PM2 tahu apa yang harus di-restart setelah reboot.
+
+## 6. Verifikasi
+
+Cek status proses:
 ```bash
 pm2 status
-pm2 logs openclaw-agent
 ```
-Sekarang agent kamu sudah hidup di server Oracle Cloud yang tangguh (12GB/24GB RAM) dan siap menerima perintah via messaging app.
+
+Kamu harus melihat baris `openclaw` dengan status `online`.
+
+Lihat log realtime:
+```bash
+pm2 logs openclaw
+```
+
+Tekan `Ctrl+C` untuk keluar dari mode log.
+
+Restart manual jika butuh:
+```bash
+pm2 restart openclaw
+```
+
+## Update di Kemudian Hari
+
+Untuk update ke versi terbaru:
+```bash
+cd ~/openclaw
+git pull
+npm install
+pm2 restart openclaw
+```
+
+## Akses dari Browser (Opsional)
+
+Jika agent kamu memiliki web interface, kamu bisa mengaksesnya melalui Tailscale tanpa membuka port ke publik:
+
+```bash
+# Dari laptop kamu yang sudah terhubung Tailscale
+# Buka browser dan akses: http://100.x.x.x:3000
+```
+
+Ganti `100.x.x.x` dengan IP Tailscale server kamu, dan `3000` dengan port yang dikonfigurasi di `.env`.
+
+Lanjut ke [Modul 9](09_MESSAGING_CONNECT.md) untuk menghubungkan agent ke Telegram atau WhatsApp.

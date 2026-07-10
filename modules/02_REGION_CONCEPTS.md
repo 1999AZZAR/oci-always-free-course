@@ -1,24 +1,69 @@
-# Modul 2: Pemilihan Region & Konsep Always Free
+# Modul 2: Pemilihan Region & Kuota Always Free
 
-Memahami bagaimana Oracle membagi wilayah kekuasaannya dan apa arti sebenarnya dari "Gratis Selamanya".
+Dua hal paling kritis di modul ini: **pilihan Home Region** dan **pahami batas resource terbaru**. Salah pilih region = tidak bisa diubah selamanya. Salah paham kuota = kaget pas instance kena shutdown.
 
-## 1. Memilih Home Region (Kritis!)
-Saat mendaftar, kamu diminta memilih **Home Region**. Pikirkan ini baik-baik karena:
-- **Tidak bisa diubah**: Sekali pilih, kamu terjebak di sana selamanya.
-- **Resource Limitation**: Fitur *Always Free* hanya tersedia di Home Region kamu.
-- **Latency**: Pilih yang paling dekat dengan lokasi kamu atau target user kamu.
-  - Rekomendasi untuk Indonesia: **Singapore** (Paling stabil/cepat), **Tokyo**, atau **Seoul**.
+## Home Region
 
-## 2. Kuota Resource Always Free
-Oracle sangat royal, tapi ada batasnya. Berikut detail "Loots" yang bisa kamu ambil:
-- **Compute (ARM)**: VM.Standard.A1.Flex. Total **2 OCPU dan 12 GB RAM** untuk akun Free Tier (diperbarui per 15 Juni 2026 dari sebelumnya 4 OCPU / 24 GB RAM. Bagi akun Pay-As-You-Go lama, limit gratis 4 OCPU / 24 GB RAM mungkin masih berlaku). Bisa dibagi menjadi beberapa instance kecil.
-- **Compute (AMD)**: VM.Standard.E2.1.Micro. 2 instance kecil (1 GB RAM masing-masing).
-- **Storage**: Total 200 GB Block Volume.
-- **Network**: 10 TB Outbound Data Transfer per bulan.
+Home Region adalah lokasi data center utama kamu. Semua resource Always Free **hanya bisa dibuat di Home Region ini**. Sekali dipilih, tidak ada cara untuk mengubahnya kecuali membuat akun baru.
 
-## 3. Strategi "Out of Capacity"
-Kadang saat membuat instance ARM, muncul pesan error kapasitas habis. Ini wajar karena banyak orang yang "berburu" resource gratis ini.
-**Tips Pro:**
-- Coba buat instance di jam-jam sepi (dini hari).
-- Gunakan script *OCI Instance Creator* (tersedia di komunitas) untuk mencoba secara otomatis setiap menit.
-- **Upgrade ke Pay-As-You-Go**: Ini trik paling ampuh. Kamu tetap tidak akan ditagih selama pemakaian di bawah limit Free Tier, tapi akun kamu diprioritaskan untuk mendapatkan resource.
+### Pilihan Region untuk Pengguna Indonesia
+
+| Region | Kode | Rekomendasi |
+|---|---|---|
+| Indonesia North (Batam) | `ap-batam-1` | Latensi terbaik untuk user Indonesia. Tersedia sejak 2024. |
+| Singapore | `ap-singapore-1` | Paling stabil, koneksi ke Indonesia ~15–20ms. Pilihan aman. |
+| Tokyo | `ap-tokyo-1` | Latensi lebih tinggi (~70ms), tapi kapasitas ARM biasanya lebih longgar. |
+| Seoul | `ap-seoul-1` | Mirip Tokyo, kadang lebih mudah dapat ARM instance. |
+
+**Saran**: Jika tujuan utama adalah deploy agent untuk pemakaian pribadi, pilih **Singapore** atau **Batam**. Kalau kamu sering mengalami "Out of Capacity" di Singapore, coba Tokyo atau Seoul — kapasitas ARM di sana biasanya lebih lega.
+
+Kapasitas ARM sangat bergantung pada seberapa banyak orang berburu resource gratis di region tersebut. Tidak ada data resmi soal ini, tapi secara umum region Asia Timur (Tokyo, Osaka, Seoul) punya kapasitas lebih longgar dibanding Singapore.
+
+## Kuota Resource Always Free (Update Juni 2026)
+
+Oracle diam-diam memangkas limit ARM Ampere A1 per tanggal **15 Juni 2026** tanpa pengumuman resmi.
+
+### ARM Ampere A1 Compute (VM.Standard.A1.Flex)
+
+| Jenis Akun | OCPU | RAM |
+|---|---|---|
+| **Free Tier (akun baru)** | 2 OCPU | 12 GB |
+| **Pay-As-You-Go / Akun lama** | 4 OCPU | 24 GB |
+
+Secara teknis, kuota dihitung per bulan dalam satuan jam:
+- Free Tier baru: **1.500 OCPU-hours** dan **9.000 GB-hours** per bulan.
+- Ini setara dengan 1 instance berjalan non-stop sepanjang bulan dengan 2 OCPU dan 12 GB RAM.
+
+Kamu bisa membagi kuota ini ke beberapa instance kecil — misal 2 instance masing-masing 1 OCPU dan 6 GB RAM.
+
+### Resource Lain yang Tidak Berubah
+
+| Resource | Kuota |
+|---|---|
+| AMD Micro (VM.Standard.E2.1.Micro) | 2 instance (1/8 OCPU, 1 GB RAM) |
+| Block Storage | 200 GB total |
+| Object Storage | 20 GB |
+| Outbound Transfer | 10 TB/bulan |
+| Autonomous Database | 2 database |
+| Load Balancer | 1x Flexible (10 Mbps) + 1x NLB |
+
+## Idle Reclamation — Risiko yang Sering Diabaikan
+
+Oracle bisa **otomatis mematikan** instance kamu jika dianggap idle. Kriteria idle selama periode 7 hari:
+
+- CPU utilization < 15% (di persentil ke-95)
+- Network utilization < 15%
+- Memory utilization < 15% (untuk A1 shapes)
+
+Jika instance dimatikan karena idle dan kamu coba restart, ada kemungkinan tidak bisa — terutama jika kapasitas di region tersebut sedang habis.
+
+**Cara mencegah**: Upgrade ke Pay-As-You-Go. Instance PAYG tidak kena idle reclamation, dan kamu tidak akan ditagih selama pemakaian masih di bawah kuota Always Free.
+
+## Cara Upgrade ke Pay-As-You-Go
+
+1. Login ke OCI Console.
+2. Klik ikon profil di kanan atas → **Upgrade and Manage Payment**.
+3. Masukkan detail kartu dan konfirmasi upgrade.
+4. Instance dan semua resource kamu tidak akan berubah — hanya status akun yang naik.
+
+Upgrade ini tidak membuatmu otomatis kena tagihan. Kamu baru ditagih jika penggunaan melebihi limit Always Free.

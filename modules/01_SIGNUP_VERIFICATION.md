@@ -1,28 +1,50 @@
 # Modul 1: Pendaftaran & Verifikasi Akun
 
-Pendaftaran Oracle Cloud bisa menjadi "tricky". Berikut adalah langkah-langkah dan tips agar verifikasi kamu lolos.
+Oracle Cloud punya sistem fraud detection yang cukup agresif. Banyak orang gagal di sini bukan karena kartu mereka bermasalah, tapi karena ada data yang tidak cocok dengan yang tercatat di bank. Siapkan semuanya sebelum mulai.
 
-## Persiapan
-Sebelum mendaftar, siapkan:
-1. **Email Aktif**: Gunakan email utama (Gmail/Outlook disarankan).
-2. **Nomor HP**: Untuk verifikasi OTP.
-3. **Kartu Kredit/Debit**: Harus memiliki logo Visa/Mastercard dan mendukung **International Transaction**.
-   - Oracle akan melakukan *temporary hold* sekitar $1 USD (atau Rp 15.000) untuk validasi kartu, lalu dikembalikan.
-   - Kartu digital seperti Jenius (m-Card) atau Jago biasanya berhasil, namun kartu debit bank konvensional tertentu kadang ditolak.
+## Apa yang Kamu Butuhkan
+
+- **Email aktif** — Gmail atau Outlook. Hindari email kerja yang punya SPF/DKIM ketat, kadang email verifikasi Oracle masuk ke spam.
+- **Nomor HP** — Untuk OTP. Pastikan nomor aktif dan bisa terima SMS internasional.
+- **Kartu debit/kredit** — Harus berlogo Visa atau Mastercard dan aktif untuk transaksi internasional. Oracle akan melakukan *temporary hold* sekitar $1 USD (atau ekuivalennya) untuk validasi, lalu dikembalikan dalam 1–3 hari kerja.
+
+### Kartu yang Biasanya Berhasil
+- Kartu kredit fisik dari bank besar (BCA, Mandiri, BNI, BRI, CIMB Niaga)
+- Jenius m-Card (Visa)
+- Jago Mastercard
+
+### Kartu yang Sering Ditolak
+- Kartu debit biasa tanpa fitur international transaction
+- Kartu virtual/prepaid
+- Kartu yang belum pernah dipakai untuk transaksi luar negeri
+
+Jika belum yakin, hubungi bank kamu dan minta diaktifkan untuk transaksi e-commerce internasional sebelum mendaftar.
 
 ## Langkah Pendaftaran
-1. Buka [oracle.com/cloud/free/](https://www.oracle.com/cloud/free/).
-2. Masukkan Negara, Nama Depan, Nama Belakang, dan Email.
-3. Verifikasi Email melalui link yang dikirim ke inbox kamu.
-4. **Detail Akun**:
-   - Pilih **Account Type**: Personal Use.
-   - **Cloud Account Name**: Ini akan menjadi *tenancy name* kamu (unik).
-   - **Home Region**: **SANGAT PENTING**. Pilih region terdekat (misal: Singapore atau Tokyo). Kamu tidak bisa mengubah Home Region setelah akun jadi. Always Free Resource hanya tersedia di Home Region.
-5. **Detail Alamat**: Masukkan alamat sesuai dengan data yang terdaftar di Bank/Kartu kamu.
-6. **Verifikasi Pembayaran**: Masukkan detail kartu. Pastikan saldo ada minimal Rp 50.000 untuk hold sementara.
-7. Selesaikan pendaftaran dan tunggu email "Your account is ready" (bisa instan, bisa beberapa jam).
 
-## Troubleshooting Verifikasi Gagal
-- Pastikan tidak pakai VPN/Proxy saat mendaftar.
-- Gunakan data (Nama/Alamat) yang sama persis dengan billing kartu.
-- Jika ditolak, coba gunakan kartu dari bank lain atau gunakan mode Incognito.
+1. Buka [oracle.com/cloud/free](https://www.oracle.com/cloud/free/).
+2. Masukkan nama depan, nama belakang, dan email. Klik **Verify my email** — buka inbox dan klik link konfirmasi.
+3. Setelah email terverifikasi, kamu akan diarahkan ke form detail akun:
+   - **Cloud Account Name**: Nama tenancy kamu, huruf kecil, tanpa spasi. Ini permanen dan tidak bisa diubah.
+   - **Home Region**: Pilih dengan hati-hati. Lihat penjelasan di [Modul 2](02_REGION_CONCEPTS.md).
+   - **Account Type**: Pilih *Individual* atau *Company* sesuai kebutuhan.
+4. Isi detail alamat. **Kritis**: nama dan alamat harus identik dengan data billing kartu kamu, termasuk ejaan dan singkatan (misal "Jl." atau "Jalan").
+5. Masukkan detail kartu. Oracle akan memproses hold sementara.
+6. Klik **Start my free trial** dan tunggu email konfirmasi.
+
+Proses bisa instan atau bisa memakan waktu beberapa jam. Jika lebih dari 24 jam belum ada kabar, cek folder spam.
+
+## Troubleshooting
+
+**Error generik saat validasi kartu:**
+- Matikan VPN dan ad-blocker sebelum mendaftar.
+- Gunakan Chrome atau Edge dalam mode normal (bukan Incognito).
+- Pastikan nama di form sama persis dengan nama di kartu.
+
+**Akun terblokir setelah beberapa percobaan gagal:**
+- Tunggu 24–48 jam sebelum mencoba lagi dengan email atau kartu berbeda.
+- Percobaan berulang dengan data yang sama akan memperburuk situasi.
+- Gunakan opsi **Chat** di halaman sign-up Oracle untuk bicara dengan support.
+
+**Hold $1 muncul tapi akun tidak jadi:**
+- Ini berarti kartunya valid tapi ada issue lain (biasanya data tidak cocok). Hubungi Oracle support melalui form di situs mereka.
