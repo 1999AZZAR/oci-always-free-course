@@ -42,6 +42,9 @@ Resource di atas berlaku **selamanya** (bukan 12 bulan seperti AWS Free Tier), s
 8. [Instalasi OpenClaw Agent](modules/08_INSTALL_OPENCLAW.md)
 9. [Integrasi Telegram & WhatsApp](modules/09_MESSAGING_CONNECT.md)
 
+### Fase 5: Terminal UX
+10. [Developer Toolchain (Oh My Bash, RTK, OpenCode, alias-hub, eza, fastfetch)](modules/10_TERMINAL_UX.md)
+
 ---
 
 **Catatan**: Selama penggunaan kamu masih di bawah limit Always Free, Oracle tidak akan menagih sepeser pun — bahkan setelah upgrade ke Pay-As-You-Go. Upgrade tersebut justru disarankan untuk stabilitas resource dan menghindari idle reclamation.
