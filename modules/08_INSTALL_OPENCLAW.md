@@ -46,4 +46,4 @@ Cek status agent:
 pm2 status
 pm2 logs openclaw-agent
 ```
-Sekarang agent kamu sudah hidup di server Oracle Cloud yang tangguh (24GB RAM!) dan siap menerima perintah via messaging app.
+Sekarang agent kamu sudah hidup di server Oracle Cloud yang tangguh (12GB/24GB RAM) dan siap menerima perintah via messaging app.

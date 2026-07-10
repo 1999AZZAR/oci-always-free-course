@@ -4,7 +4,7 @@ Panduan lengkap untuk memanfaatkan resource gratis dari Oracle Cloud Infrastruct
 
 ## Mengapa OCI Always Free?
 Oracle menawarkan resource gratis yang sangat melimpah dibanding provider lain:
-- **ARM Ampere A1 Compute:** Sampai dengan 4 OCPU dan 24 GB RAM (Bisa dibagi ke beberapa instance).
+- **ARM Ampere A1 Compute:** Sampai dengan 2 OCPU dan 12 GB RAM untuk akun Free Tier (sebelumnya 4 OCPU / 24 GB RAM, dikurangi per 15 Juni 2026. Akun Pay-As-You-Go lama mungkin masih mendapatkan limit 4 OCPU / 24 GB RAM).
 - **AMD Compute:** 2 instance kecil (1/8 OCPU, 1 GB RAM).
 - **Block Storage:** Total 200 GB gratis.
 - **Data Transfer:** 10 TB per bulan.
@@ -16,7 +16,7 @@ Oracle menawarkan resource gratis yang sangat melimpah dibanding provider lain:
 2. [Pemilihan Region & Konsep "Always Free"](modules/02_REGION_CONCEPTS.md)
 
 ### Fase 2: Provisioning Resource
-3. [Membuat Instance ARM Ampere (24GB RAM!)](modules/03_CREATE_INSTANCE.md)
+3. [Membuat Instance ARM Ampere (12GB/24GB RAM)](modules/03_CREATE_INSTANCE.md)
 4. [Konfigurasi VCN & Security Lists (Firewall)](modules/04_NETWORK_SECURITY.md)
 
 ### Fase 3: Networking & Akses

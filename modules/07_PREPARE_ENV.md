@@ -34,6 +34,6 @@ nvm use --lts
 ```bash
 sudo apt install -y git htop tmux ncdu
 ```
-- **htop**: Buat mantau penggunaan RAM 24GB kamu.
+- **htop**: Buat mantau penggunaan RAM (12GB/24GB) kamu.
 - **tmux**: Biar session terminal nggak mati pas kamu disconnect.
 - **ncdu**: Cek file mana yang bikin disk penuh.

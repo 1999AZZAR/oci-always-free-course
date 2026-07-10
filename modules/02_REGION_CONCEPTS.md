@@ -11,7 +11,7 @@ Saat mendaftar, kamu diminta memilih **Home Region**. Pikirkan ini baik-baik kar
 
 ## 2. Kuota Resource Always Free
 Oracle sangat royal, tapi ada batasnya. Berikut detail "Loots" yang bisa kamu ambil:
-- **Compute (ARM)**: VM.Standard.A1.Flex. Total 4 OCPU dan 24 GB RAM. Bisa buat 1 instance besar atau 4 instance kecil.
+- **Compute (ARM)**: VM.Standard.A1.Flex. Total **2 OCPU dan 12 GB RAM** untuk akun Free Tier (diperbarui per 15 Juni 2026 dari sebelumnya 4 OCPU / 24 GB RAM. Bagi akun Pay-As-You-Go lama, limit gratis 4 OCPU / 24 GB RAM mungkin masih berlaku). Bisa dibagi menjadi beberapa instance kecil.
 - **Compute (AMD)**: VM.Standard.E2.1.Micro. 2 instance kecil (1 GB RAM masing-masing).
 - **Storage**: Total 200 GB Block Volume.
 - **Network**: 10 TB Outbound Data Transfer per bulan.
