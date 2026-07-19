@@ -34,6 +34,20 @@ Jika belum yakin, hubungi bank kamu dan minta diaktifkan untuk transaksi e-comme
 
 Proses bisa instan atau bisa memakan waktu beberapa jam. Jika lebih dari 24 jam belum ada kabar, cek folder spam.
 
+## Setelah Berhasil — Verifikasi
+
+Setelah menerima email konfirmasi, login ke [cloud.oracle.com](https://cloud.oracle.com):
+
+1. **Cek tipe akun**: Klik ikon profil kanan atas → **Tenancy** → lihat di bagian **Cloud Account Type**. Jika terbaca *Free* atau *Trial*, kamu belum upgrade ke PAYG (belum perlu sekarang).
+2. **Catat Home Region**: Di halaman yang sama, lihat **Home Region** — ini tidak bisa diubah.
+3. **Cek limit Always Free**:
+   - Menu → **Governance** → **Limits, Quotas and Usage**
+   - Filter dengan **Service**: `Compute` → **Resource**: `Standard1-Micro` dan `A1-Flex`
+   - Pastikan kamu melihat kuota `2` atau `4` OCPU untuk ARM
+4. **Cek kartu**: Pastikan *temporary hold* sudah hilang dari rekening (1–3 hari).
+
+Jika semua terlihat normal, lanjut ke [Modul 2](02_REGION_CONCEPTS.md).
+
 ## Troubleshooting
 
 **Error generik saat validasi kartu:**

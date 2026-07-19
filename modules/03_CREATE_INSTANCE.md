@@ -35,9 +35,19 @@ Untuk deployment agent tunggal (OpenClaw atau sejenisnya), **1 instance dengan s
 - Pastikan **Assign a public IPv4 address** dicentang — kamu butuh ini untuk SSH pertama kali sebelum Tailscale terpasang.
 
 **Bagian Add SSH Keys**
+
+Kamu punya dua opsi:
+
+*Opsi A — Generate (Mudah, untuk pemula):*
 - Pilih **Generate a key pair for me**.
-- Klik **Save Private Key** dan simpan file `.key` di tempat yang aman.
-- Kamu tidak bisa mendownload key ini lagi setelah instance dibuat.
+- Klik **Save Private Key** dan simpan file `.key` di folder `~/.ssh/` di laptop kamu.
+- Beri nama file yang jelas, misal `oci-agent.key`.
+- **Kamu tidak bisa mendownload key ini lagi** setelah halaman ini ditutup.
+
+*Opsi B — Upload existing (Jika sudah punya key pair):*
+- Pilih **Upload public key**.
+- Pilih file `id_rsa.pub` atau `~/.ssh/authorized_keys` dari laptop kamu.
+- Gunakan ini jika kamu ingin memakai key yang sudah terdaftar di GitHub atau server lain.
 
 **Bagian Boot Volume**
 - Ubah ukurannya ke **100 GB** — kamu punya total 200 GB gratis, jadi pakai setengahnya untuk boot volume yang cukup lega.
@@ -67,10 +77,43 @@ Setelah instance Running, salin **Public IP Address**-nya dari detail instance.
 Di terminal lokal kamu:
 ```bash
 # Set permission yang benar untuk private key
-chmod 400 ~/path/to/oracle_key.key
+chmod 400 ~/.ssh/oci-agent.key
 
 # Sambungkan via SSH
-ssh -i ~/path/to/oracle_key.key ubuntu@<public-ip>
+ssh -i ~/.ssh/oci-agent.key ubuntu@<public-ip>
+
+# Jika menggunakan port non-standar atau ingin lebih praktis,
+# buat SSH config (lihat Modul 6)
 ```
 
-Default username untuk Ubuntu di OCI adalah `ubuntu`. Jika berhasil masuk, lanjut ke [Modul 4](04_NETWORK_SECURITY.md) untuk konfigurasi firewall sebelum mengekspos port apapun.
+Default username untuk Ubuntu di OCI adalah `ubuntu`.
+
+## Verifikasi — Instance Siap Dipakai
+
+Setelah berhasil SSH, jalankan perintah berikut untuk memastikan semuanya benar:
+
+```bash
+# Cek arsitektur processor (harus aarch64 = ARM)
+uname -m
+
+# Cek OS dan versi
+cat /etc/os-release | head -4
+
+# Cek CPU dan RAM
+lscpu | grep "CPU(s)"
+free -h
+
+# Cek disk
+df -h /
+
+# Cek akses sudo (harusnya tanpa password)
+sudo whoami
+```
+
+Output yang diharapkan:
+- `uname -m` → `aarch64`
+- RAM mendekati 12 GB atau 24 GB (sesuai spek)
+- `sudo whoami` → `root` (tanpa error)
+- Disk `/` sekitar 100 GB
+
+**Jika semua sesuai, instance ARM kamu sudah siap.** Lanjut ke [Modul 4](04_NETWORK_SECURITY.md) untuk konfigurasi firewall sebelum mengekspos port apapun.

@@ -38,6 +38,17 @@ OCI Ubuntu image datang dengan aturan iptables bawaan yang cukup ketat. Bahkan s
 
 > **Jangan gunakan `ufw`** di instance OCI. `ufw` bisa bertabrakan dengan aturan iptables bawaan Oracle dan berpotensi memutus koneksi iSCSI yang digunakan untuk boot volume — bisa bikin instance tidak bisa boot.
 
+### Persiapan — Install iptables-persistent
+
+Agar aturan iptables tetap ada setelah reboot, install package penyimpan aturan:
+
+```bash
+sudo apt update
+sudo apt install -y iptables-persistent
+```
+
+Saat instalasi, akan muncul dialog untuk menyimpan aturan IPv4 dan IPv6 saat ini. Pilih **Yes** untuk keduanya.
+
 ### Cara Membuka Port di iptables
 
 Sambungkan via SSH, lalu jalankan:
@@ -45,34 +56,63 @@ Sambungkan via SSH, lalu jalankan:
 ```bash
 # Lihat aturan yang aktif saat ini
 sudo iptables -L INPUT --line-numbers
-
-# Tambahkan aturan untuk port yang ingin dibuka (ganti 80 dengan port kamu)
-sudo iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
-
-# Simpan agar aturan tetap ada setelah reboot
-sudo iptables-save | sudo tee /etc/iptables/rules.v4 > /dev/null
 ```
 
-Untuk port 443:
+Perhatikan nomor baris aturan yang sudah ada. Tambahkan aturan baru di posisi pertama:
+
 ```bash
+# Tambahkan aturan untuk port 80 (HTTP)
+sudo iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
+
+# Tambahkan aturan untuk port 443 (HTTPS)
 sudo iptables -I INPUT 1 -p tcp --dport 443 -j ACCEPT
-sudo iptables-save | sudo tee /etc/iptables/rules.v4 > /dev/null
+
+# Tambahkan aturan untuk port Tailscale (UDP)
+sudo iptables -I INPUT 1 -p udp --dport 41641 -j ACCEPT
+```
+
+**Simpan aturan** agar tetap ada setelah reboot:
+
+```bash
+sudo netfilter-persistent save
 ```
 
 ### Verifikasi
 
-Setelah menambahkan aturan, pastikan aturan terbaca:
+Cek apakah aturan sudah terbaca:
+
 ```bash
 sudo iptables -L INPUT --line-numbers | head -20
 ```
 
-Kamu seharusnya melihat baris `ACCEPT` untuk port yang baru kamu tambahkan.
+Output akan terlihat seperti ini (nomor baris bisa berbeda):
+
+```
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source       destination
+1    ACCEPT     udp  --  anywhere     anywhere     udp dpt:41641
+2    ACCEPT     tcp  --  anywhere     anywhere     tcp dpt:443
+3    ACCEPT     tcp  --  anywhere     anywhere     tcp dpt:80
+4    ACCEPT     all  --  anywhere     anywhere     ...
+...
+```
+
+Pastikan baris `ACCEPT` untuk port yang kamu buka muncul di daftar.
 
 ## Catatan Penting tentang iSCSI
 
 OCI menggunakan iSCSI untuk menghubungkan boot volume ke instance. Ada beberapa aturan iptables bawaan yang menjaga koneksi ini. **Jangan pernah menjalankan `sudo iptables -F`** (flush semua aturan) — ini bisa memutus koneksi iSCSI dan membuat instance tidak bisa diakses, bahkan tidak bisa boot ulang.
 
 Selalu tambahkan aturan secara spesifik per port, bukan flush semua.
+
+## Ringkasan — Dua Lapis Firewall
+
+| Lapisan | Lokasi | Cara Atur |
+|---|---|---|
+| Security List | OCI Console | Tambah Ingress Rule per port |
+| iptables | Dalam OS (SSH) | `sudo iptables -I INPUT ...` lalu `sudo netfilter-persistent save` |
+
+Keduanya harus dibuka agar port bisa diakses dari luar.
 
 ## Lanjutan
 

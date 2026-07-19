@@ -67,3 +67,14 @@ Jika instance dimatikan karena idle dan kamu coba restart, ada kemungkinan tidak
 4. Instance dan semua resource kamu tidak akan berubah — hanya status akun yang naik.
 
 Upgrade ini tidak membuatmu otomatis kena tagihan. Kamu baru ditagih jika penggunaan melebihi limit Always Free.
+
+## Verifikasi — Pastikan Kamu Siap ke Modul 3
+
+Sebelum lanjut, pastikan hal-hal berikut:
+
+1. **Kamu tahu Home Region-mu** — Login ke OCI Console, lihat di ikon profil → **Tenancy**. Jika bukan Singapore/Batam, catat region kamu.
+2. **Kamu paham kuota ARM-mu** — Buka **Governance** → **Limits, Quotas and Usage** → filter service `Compute`, resource `A1-Flex`. Apakah terbaca `2` OCPU atau `4`?
+3. **Kamu sudah decide region untuk instance** — Pilih satu region (Home Region) dan catat kode region-nya (misal `ap-singapore-1`).
+4. **Kamu siap upgrade ke PAYG jika perlu** — Jika suatu saat ARM instance terus "Out of Capacity", opsi upgrade selalu ada.
+
+Jika semua jelas, lanjut ke [Modul 3](03_CREATE_INSTANCE.md) untuk membuat instance ARM.
