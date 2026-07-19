@@ -98,6 +98,42 @@ OpenCode akan:
 4. Setelah disetujui, menulis perubahan (Build mode)
 5. Cek perubahan dengan `git diff` sebelum commit
 
+## 7. Verifikasi — Audit Seluruh Setup dengan OpenCode
+
+Inilah tes paling praktis: minta OpenCode untuk membaca repo kursus ini dan memverifikasi bahwa semua konfigurasi dari Modul 1 sampai 9 sudah benar di server kamu.
+
+```bash
+# Clone repo kursus ini (atau sudah ada)
+cd ~
+git clone https://github.com/1999AZZAR/oci-always-free-course.git
+cd oci-always-free-course
+
+# Minta OpenCode untuk audit
+opencode
+```
+
+Kirim prompt berikut di TUI:
+
+```
+Baca semua file modul dari modules/01 sampai modules/09.
+Lalu audit server ini:
+1. Cek OCI instance — arsitektur dan OS (uname -a, lscpu)
+2. Cek Tailscale status (tailscale status)
+3. Cek SSH config (~/.ssh/config)
+4. Cek Docker dan Node.js versi
+5. Cek Fail2ban status dan jail yang aktif
+6. Cek iptables rules
+7. Cek apakah ada service berjalan di port publik (ss -tlnp)
+
+Buat ringkasan: apa yang sudah sesuai, apa yang masih kurang, dan saran perbaikannya.
+```
+
+OpenCode akan mengeksekusi perintah-perintah audit, membaca output, dan membandingkannya dengan panduan di modul. Hasilnya adalah laporan lengkap status server kamu.
+
+Ini membuktikan dua hal sekaligus:
+- OpenCode berfungsi penuh di server OCI
+- Seluruh setup dari awal course sudah terverifikasi
+
 ---
 
 ## Ringkasan
