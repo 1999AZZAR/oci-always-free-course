@@ -1,6 +1,6 @@
-# OCI Always Free Tier — Panduan Deployment AI Agent
+# OCI Always Free Tier — Panduan Setup Server dari Nol
 
-Panduan lengkap untuk memanfaatkan resource gratis dari Oracle Cloud Infrastructure (OCI), mengamankan akses dengan Tailscale mesh VPN, dan melindungi server dengan Fail2ban.
+Panduan lengkap memanfaatkan resource gratis Oracle Cloud Infrastructure (OCI): dari pendaftaran akun, provisioning instance ARM, pengamanan akses dengan Tailscale & Fail2ban, hingga terminal yang nyaman dengan OpenCode dan developer tools.
 
 ## Mengapa OCI?
 

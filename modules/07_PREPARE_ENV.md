@@ -1,6 +1,6 @@
 # Modul 7: Persiapan Environment (Docker & Node.js)
 
-Sebelum install agent, kita perlu menyiapkan fondasi: Docker untuk mengisolasi aplikasi, dan Node.js untuk menjalankan agent berbasis JavaScript. Semua command dijalankan di dalam instance OCI via SSH.
+Server sudah berjalan. Sekarang kita install fondasi yang dibutuhkan untuk menjalankan aplikasi: Docker untuk container, Node.js untuk JavaScript runtime, PM2 untuk process management, dan tool monitoring. Semua command dijalankan di dalam instance OCI via SSH.
 
 ## 1. Update Sistem
 
@@ -120,4 +120,4 @@ tmux attach -t main
 
 Biasakan untuk menjalankan semua pekerjaan panjang di dalam tmux session — jika koneksi SSH putus, proses di dalam tmux tetap berjalan.
 
-Lanjut ke [Modul 8](08_INSTALL_OPENCLAW.md) untuk install OpenClaw agent.
+Lanjut ke [Modul 8](08_FAIL2BAN_SETUP.md) untuk melindungi server dengan Fail2ban.

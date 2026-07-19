@@ -209,14 +209,29 @@ alias | head -20       # Alias yang aktif
 
 ---
 
-## Ringkasan Akhir
+## Selesai — Perjalanan dari Nol
 
-Setelah modul ini, terminal kamu punya:
+Kamu telah menyelesaikan seluruh kursus. Mari lihat seberapa jauh perjalanan dari awal:
 
-- **Oh My Bash** — prompt informatif dengan tema visual
-- **RTK** — output command terkendali, hemat token AI
-- **alias-hub** — shortcut produktif untuk git, docker, file management
-- **eza** — directory listing jauh lebih readable dari `ls`
-- **fastfetch** — system info rapi setiap login
+| Fase | Apa yang Terjadi |
+|---|---|
+| **Fase 1** | Akun OCI dibuat, Home Region dipilih |
+| **Fase 2** | Instance ARM Ampere online, firewall berlapis aktif |
+| **Fase 3** | Tailscale mesh VPN terpasang, SSH aman tanpa IP publik |
+| **Fase 4** | Environment siap (Docker, Node.js), Fail2ban melindungi dari brute force, notifikasi Telegram aktif |
+| **Fase 5** | Terminal ditingkatkan dengan OpenCode, Oh My Bash, RTK, alias-hub, eza, fastfetch |
 
-Semua tool diinstall dan dikelola via OpenCode — kamu sekarang terbiasa dengan agent-driven workflow untuk administrasi server.
+Server OCI Always Free kamu sekarang:
+- ✅ Berjalan 24/7 tanpa biaya
+- ✅ Hanya bisa diakses via jaringan private Tailscale
+- ✅ Dilindungi Fail2ban dengan notifikasi realtime
+- ✅ Punya AI coding agent (OpenCode) siap pakai
+- ✅ Terminal yang nyaman dengan alat produktif
+
+Beberapa hal yang bisa kamu lakukan selanjutnya:
+- Deploy aplikasi web di Docker (Nginx, PostgreSQL, dll.)
+- Gunakan OpenCode untuk mengelola server dan menulis kode
+- Eksplorasi resource Always Free lain seperti Object Storage atau Autonomous Database
+- Pantau server dengan `htop` dan `ncdu` secara berkala
+
+Terima kasih telah mengikuti kursus ini. Selamat menikmati server gratis Oracle-mu.
