@@ -1,13 +1,13 @@
 # Modul 10: OpenCode — AI Coding Agent di Terminal
 
-Modul ini menginstall OpenCode, AI coding agent open-source yang bisa kamu gunakan langsung dari terminal server OCI — gratis, tanpa perlu resource lokal untuk LLM.
+Modul ini menginstall OpenCode, AI coding agent open-source yang bisa langsung dipakai setelah instalasi — tanpa login, tanpa API key, tanpa biaya.
 
 ## Apa itu OpenCode?
 
 OpenCode adalah AI coding agent berbasis terminal (TUI) yang:
 
 - **Open source & gratis** — 160K+ GitHub stars, 7.5M+ developer bulanan.
-- **Bisa gratis total** — OpenCode Zen menyediakan model gratis (DeepSeek V4 Flash Free, Big Pickle, Nemotron 3 Ultra Free, dan lainnya) tanpa biaya per token.
+- **Free models included** — sudah termasuk model gratis bawaan, siap pakai setelah install tanpa perlu registrasi.
 - **75+ provider AI** — OpenAI, Anthropic Claude, Google Gemini, Groq, DeepSeek, GitHub Copilot, dan lainnya.
 - **LSP-aware** — otomatis memahami struktur kode di project.
 - **Multi-session** — bisa jalankan beberapa agent paralel.
@@ -26,120 +26,84 @@ Verifikasi:
 opencode --version
 ```
 
-## 2. Konfigurasi Model AI
+## 2. Langsung Pakai (Tanpa Setup)
 
-### Opsi A: OpenCode Zen — Model Gratis (Recommended)
+Setelah install, OpenCode sudah siap pakai dengan free model bawaan. Tidak perlu `/connect`, tidak perlu API key, tidak perlu login ke provider manapun.
 
-OpenCode Zen menyediakan model gratis yang bisa langsung dipakai tanpa biaya, tanpa perlu API key provider lain, dan tanpa membebani RAM/CPU server OCI.
-
-Model gratis yang tersedia:
-
-| Model | Tipe | Biaya |
-|---|---|---|
-| DeepSeek V4 Flash Free | Coding | Gratis |
-| Big Pickle | Stealth model | Gratis |
-| Nemotron 3 Ultra Free | General | Gratis |
-| MiMo-V2.5 Free | General | Gratis |
-| North Mini Code Free | Coding | Gratis |
-
-Setup:
-
-1. Jalankan OpenCode:
 ```bash
+# Masuk ke direktori project, lalu jalankan
+cd ~
 opencode
 ```
 
-2. Di dalam TUI, ketik:
+Mulai sesi coding langsung:
+
 ```
-/connect
+Buatkan file hello.py yang mencetak "Hello from OCI!" dan jalankan.
 ```
 
-3. Pilih **OpenCode Zen**. Browser akan terbuka — login dengan GitHub atau Google.
+OpenCode akan menulis kode, menjalankannya, dan menampilkan output — semua tanpa konfigurasi apapun.
 
-4. Setelah login, salin API key yang diberikan dan tempel di terminal.
+## 3. Ganti Model (Opsional)
 
-5. Ketik `/models` dan pilih model gratis seperti `DeepSeek V4 Flash Free` atau `Big Pickle`.
+Jika kamu ingin mencoba model lain, ketik `/models` di TUI untuk melihat daftar model yang tersedia. Pilih salah satu yang kamu suka.
 
-> **Kenapa ini yang direkomendasikan?** Server OCI Always Free punya resource terbatas (2–4 OCPU, 12–24 GB RAM) yang lebih baik dialokasikan untuk aplikasi dan service, bukan untuk menjalankan LLM lokal. Dengan Zen, semua komputasi AI terjadi di cloud — server OCI tetap ringan.
+Untuk menambahkan provider tambahan (misalnya pakai API key sendiri), ketik `/connect` dan ikuti petunjuknya.
 
-### Opsi B: Free API Tier — Google Gemini / Groq / NVIDIA
+## 4. Inisialisasi Project
 
-Provider berikut menawarkan API gratis tanpa kartu kredit:
+Agar OpenCode memahami struktur project kamu, inisialisasi:
 
-- **Google Gemini** — daftar di [Google AI Studio](https://makersuite.google.com/app/apikey), buat API key, lalu `/connect` → Gemini.
-- **Groq** — daftar di [Groq Console](https://console.groq.com), buat API key, lalu `/connect` → Groq. Kecepatan inference sangat tinggi.
-- **NVIDIA** — daftar di [build.nvidia.com](https://build.nvidia.com), buat API key, lalu `/connect` → NVIDIA.
+```
+/init
+```
 
-### Opsi C: Langganan yang Sudah Ada
+OpenCode akan membuat file `AGENTS.md` yang berisi konteks untuk sesi coding selanjutnya.
 
-OpenCode bisa menggunakan subscription yang mungkin sudah kamu miliki:
+## 5. Cara Pakai Dasar
 
-- **ChatGPT Plus/Pro** — `/connect` → OpenAI → ChatGPT Plus/Pro (login via browser)
-- **GitHub Copilot** — `/connect` → GitHub Copilot (login via GitHub)
-- **Claude Pro/Max** — API key Anthropic via `/connect`
-
-## 3. Inisialisasi Project
-
-Masuk ke direktori project dan init OpenCode:
+### Mode TUI (Interaktif)
 
 ```bash
 cd ~/project-anda
 opencode
 ```
 
-Di dalam TUI, ketik:
-
-```
-/init
-```
-
-OpenCode akan menganalisis struktur project dan membuat file `AGENTS.md` yang berisi konteks untuk sesi coding selanjutnya.
-
-## 4. Cara Pakai Dasar
-
-### Mode TUI (Interaktif)
-
-```bash
-opencode
-```
-
-Navigasi di dalam TUI:
-- **Tab** — toggle antara **Plan mode** (hanya rencana, tanpa eksekusi) dan **Build mode** (eksekusi langsung)
+Navigasi:
+- **Tab** — toggle **Plan mode** (rencana tanpa eksekusi) dan **Build mode** (eksekusi langsung)
 - **`@`** — cari file di project dengan fuzzy search
 - **`/undo`** — batalkan perubahan terakhir
 - **`/redo`** — terapkan kembali perubahan
-- **`/connect`** — kelola API key dan provider
-- **`/models`** — ganti model AI
+- **`/connect`** — tambah provider (opsional)
+- **`/models`** — ganti model
 
 ### Mode CLI (Non-Interaktif)
 
-Jalankan task langsung dari shell:
-
 ```bash
-opencode "Jelaskan struktur file di direktori ini"
+opencode "Jelaskan struktur direktori ini"
 opencode "Buatkan docker-compose.yml untuk PostgreSQL + Redis"
 opencode "Fix error ini: $(cat error.log)"
 ```
 
-## 5. Contoh Sesi — Fix Error dengan OpenCode
+## 6. Contoh Sesi
 
 ```bash
 opencode "Cari penyebab error 'EADDRINUSE' di file server.js dan perbaiki"
 ```
 
 OpenCode akan:
-1. Membaca file `server.js`
-2. Menganalisis kode yang menyebabkan port conflict
+1. Membaca `server.js`
+2. Menganalisis penyebab port conflict
 3. Menawarkan solusi (Plan mode)
-4. Setelah kamu setuju, menulis perubahan (Build mode)
-5. Kamu bisa cek perubahan dengan `git diff` sebelum commit
+4. Setelah disetujui, menulis perubahan (Build mode)
+5. Cek perubahan dengan `git diff` sebelum commit
 
 ---
 
 ## Ringkasan
 
-- **OpenCode gratis dan open source** — tidak ada biaya lisensi.
-- **Zen free models** — langsung pakai, tanpa API key, tanpa beban di server OCI.
-- **Fungsionalitas penuh di terminal** — tidak perlu desktop app atau IDE extension.
+- **Install lalu pakai** — free model bawaan, tanpa registrasi, tanpa API key.
+- **Biaya $0** — OpenCode open source, model gratis sudah termasuk.
+- **Bisa upgrade kapan saja** — tambah provider via `/connect` jika butuh model lebih besar.
 
-Lanjut ke [Modul 11](11_TERMINAL_ENHANCEMENT.md) untuk meng upgrade terminal kamu dengan Oh My Bash, RTK, alias-hub, eza, dan fastfetch — semuanya bisa diinstall langsung via OpenCode.
+Lanjut ke [Modul 11](11_TERMINAL_ENHANCEMENT.md) untuk upgrade terminal dengan Oh My Bash, RTK, alias-hub, eza, fastfetch — semuanya bisa diinstall via OpenCode.
