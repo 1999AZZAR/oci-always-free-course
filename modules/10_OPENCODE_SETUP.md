@@ -1,14 +1,14 @@
 # Modul 10: OpenCode — AI Coding Agent di Terminal
 
-Modul ini menginstall OpenCode, AI coding agent open-source yang bisa kamu gunakan langsung dari terminal server OCI — tanpa biaya lisensi, tanpa batasan penggunaan.
+Modul ini menginstall OpenCode, AI coding agent open-source yang berjalan langsung dari terminal server OCI — tanpa biaya lisensi, tanpa ketergantungan ke cloud API.
 
 ## Apa itu OpenCode?
 
-OpenCode adalah AI coding agent berbasis terminal (TUI) yang:
+OpenCode adalah AI coding agent berbasis terminal yang:
 
-- **Open source & gratis** — kode sumber terbuka di GitHub, 160K+ stars, 7.5M+ developer bulanan.
-- **75+ provider AI** — bisa pakai OpenAI, Anthropic Claude, Google Gemini, Groq, DeepSeek, GitHub Copilot, dan lainnya.
-- **Bisa gratis total** — pakai model gratis dari provider seperti Gemini API (free tier), Groq (free tier), NVIDIA build.nvidia.com (gratis), atau Ollama (lokal di server).
+- **Open source & gratis** — 160K+ GitHub stars, 7.5M+ developer bulanan.
+- **Bisa berjalan 100% offline** — pakai Ollama dengan model lokal di server yang sama, tanpa koneksi internet, tanpa API key.
+- **75+ provider AI** — OpenAI, Anthropic Claude, Google Gemini, Groq, DeepSeek, GitHub Copilot, dan lainnya.
 - **LSP-aware** — otomatis memahami struktur kode di project.
 - **Multi-session** — bisa jalankan beberapa agent paralel.
 - **Plan & Build mode** — review dulu sebelum eksekusi.
@@ -26,51 +26,38 @@ Verifikasi:
 opencode --version
 ```
 
-## 2. Konfigurasi Provider AI
+## 2. Konfigurasi Model AI
 
-OpenCode butuh akses ke model AI. Ada beberapa opsi — pilih salah satu:
+OpenCode butuh model AI untuk bekerja. Kamu punya dua jalur: **lokal/offline** (recommended) atau **cloud API**.
 
-### Opsi A: Gratis — Gunakan Google Gemini (Free Tier)
+### Jalur A: 100% Offline — Ollama + Model Lokal (Recommended)
 
-Google memberikan API key gratis dengan rate limit yang cukup untuk penggunaan personal:
-
-1. Buka [Google AI Studio](https://makersuite.google.com/app/apikey), klik **Get API Key**.
-2. Buat API key (gratis, tidak perlu kartu kredit).
-3. Jalankan OpenCode dan hubungkan:
-
-```bash
-opencode
-```
-
-Di dalam TUI, ketik:
-
-```
-/connect
-```
-
-Pilih **Google Gemini**, lalu masukkan API key kamu.
-
-### Opsi B: Gratis — Gunakan Groq (Free Tier)
-
-Groq menawarkan akses gratis ke Llama, Mixtral, Gemma, dan model open-source lain dengan kecepatan sangat tinggi:
-
-1. Daftar di [Groq Console](https://console.groq.com), klik **Create API Key**.
-2. Jalankan `opencode`, ketik `/connect`, pilih **Groq**, masukkan API key.
-
-### Opsi C: Gratis — Gunakan Ollama (Model Lokal)
-
-Jalankan model LLM langsung di server OCI tanpa API key sama sekali:
+Model berjalan langsung di server OCI kamu. Setelah model didownload (sekali), **tidak perlu koneksi internet sama sekali** — tidak ada API key, tidak ada biaya per request, tidak ada data keluar dari server.
 
 ```bash
 # Install Ollama
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Download model (pilih salah satu)
-ollama pull qwen3-coder:3b    # Ringan, cocok untuk ARM 4 OCPU
-ollama pull deepseek-coder-v2 # Lebih besar, butuh RAM cukup
+# Download model coding (cocok untuk ARM Ampere 4 OCPU / 24 GB RAM)
+ollama pull qwen3-coder:3b
 ```
 
-Konfigurasi OpenCode untuk pakai Ollama. Buat file `~/.config/opencode/opencode.jsonc`:
+Model `qwen3-coder:3b` hanya ~1.8 GB dan berjalan lancar di ARM Ampere.
+
+Ollama otomatis mendeteksi OpenCode dan mengkonfigurasi dirinya sendiri. Jalankan OpenCode:
+
+```bash
+opencode
+```
+
+Ketik `/models` di TUI, pilih model `qwen3-coder:3b` dari daftar.
+
+Jika model tidak muncul secara otomatis, buat konfigurasi manual:
+
+```bash
+mkdir -p ~/.config/opencode
+nano ~/.config/opencode/opencode.jsonc
+```
 
 ```json
 {
@@ -92,21 +79,37 @@ Konfigurasi OpenCode untuk pakai Ollama. Buat file `~/.config/opencode/opencode.
 }
 ```
 
-Jalankan `opencode`, ketik `/models`, dan pilih model lokal kamu.
+Simpan, jalankan `opencode`, ketik `/models`, dan pilih model lokal kamu.
 
-### Opsi D: Berbayar — Pakai Langganan yang Sudah Ada
+#### Alternatif Model Lokal
+
+| Model | Ukuran | RAM | Cocok Untuk |
+|---|---|---|---|
+| `qwen3-coder:3b` | ~1.8 GB | 4 GB+ | Tugas coding ringan-cepat |
+| `deepseek-coder-v2` | ~4.2 GB | 8 GB+ | Coding kompleks, refactoring |
+| `llama3.2:3b` | ~2.0 GB | 4 GB+ | General purpose |
+| `qwen3-coder:7b` | ~4.0 GB | 8 GB+ | Coding advanced |
+
+> Semua model di atas berjalan **lokal di server kamu**. Setelah download awal, tidak ada data yang dikirim ke luar. Cocok untuk project pribadi atau environment yang membutuhkan privasi data.
+
+### Jalur B: Free Tier — Google Gemini / Groq / NVIDIA
+
+Jika kamu ingin model yang lebih besar tanpa membayar, provider berikut menawarkan API gratis:
+
+- **Google Gemini** — daftar di [Google AI Studio](https://makersuite.google.com/app/apikey), buat API key (gratis), lalu `/connect` → Gemini.
+- **Groq** — daftar di [Groq Console](https://console.groq.com), buat API key, lalu `/connect` → Groq. Kecepatan inference sangat tinggi.
+- **NVIDIA** — daftar di [build.nvidia.com](https://build.nvidia.com), buat API key, lalu `/connect` → NVIDIA.
+- **OpenCode Zen (free models)** — Zen punya model gratis: DeepSeek V4 Flash Free, Nemotron 3 Ultra Free, Big Pickle, dan lainnya. `/connect` → OpenCode Zen.
+
+### Jalur C: Berbayar — Langganan yang Sudah Ada
 
 OpenCode bisa menggunakan subscription yang mungkin sudah kamu miliki:
 
 - **ChatGPT Plus/Pro** — login via `/connect` → OpenAI → ChatGPT Plus/Pro
 - **GitHub Copilot** — login via `/connect` → GitHub Copilot
-- **Claude Pro/Max** — masukkan API key Anthropic via `/connect`
+- **Claude Pro/Max** — API key Anthropic via `/connect`
 
-### Opsi E: OpenCode Zen (Pay-as-you-go)
-
-OpenCode Zen adalah model yang sudah diuji dan di-benchmark oleh tim OpenCode. Isi $20, bayar per request. Aktifkan via `/connect` → OpenCode Zen.
-
-> **Catatan**: Semua opsi di atas valid. Untuk pemula, rekomendasi termudah: **Opsi A** (Gemini free tier) karena setup-nya paling cepat dan benar-benar gratis.
+> **Rekomendasi**: Mulai dengan **Jalur A (Ollama lokal)**. Setelah model didownload, OpenCode siap pakai kapan saja tanpa internet, tanpa biaya, tanpa registrasi.
 
 ## 3. Inisialisasi Project
 
@@ -141,7 +144,6 @@ Navigasi di dalam TUI:
 - **`/connect`** — kelola API key dan provider
 - **`/models`** — ganti model AI
 - **`/share`** — buat link sharing sesi
-- **Drag & drop gambar** — OpenCode bisa membaca gambar sebagai konteks
 
 ### Mode CLI (Non-Interaktif)
 
@@ -154,8 +156,6 @@ opencode "Fix error ini: $(cat error.log)"
 ```
 
 ## 5. Contoh Sesi — Fix Error dengan OpenCode
-
-Anggap ada error di project kamu:
 
 ```bash
 opencode "Cari penyebab error 'EADDRINUSE' di file server.js dan perbaiki"
@@ -172,10 +172,8 @@ OpenCode akan:
 
 ## Ringkasan
 
-OpenCode sekarang siap digunakan. Yang perlu diingat:
-
 - **OpenCode gratis dan open source** — tidak ada biaya lisensi.
-- **Biaya hanya dari API provider** — bisa $0 jika pakai free tier (Gemini, Groq) atau model lokal (Ollama).
+- **100% offline dengan Ollama** — model lokal, tanpa API key, tanpa koneksi internet setelah setup.
 - **Fungsionalitas penuh di terminal** — tidak perlu desktop app atau IDE extension.
 
 Lanjut ke [Modul 11](11_TERMINAL_ENHANCEMENT.md) untuk meng upgrade terminal kamu dengan Oh My Bash, RTK, alias-hub, eza, dan fastfetch — semuanya bisa diinstall langsung via OpenCode.
