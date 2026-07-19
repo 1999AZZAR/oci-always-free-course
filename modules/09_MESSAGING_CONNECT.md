@@ -1,96 +1,127 @@
-# Modul 9: Integrasi Telegram & WhatsApp
+# Modul 9: Notifikasi Fail2ban via Telegram
 
-Agent kamu sudah berjalan di server. Sekarang kita sambungkan ke messaging app agar bisa diakses dari mana saja — cukup kirim pesan di Telegram atau WhatsApp.
+Fail2ban sudah melindungi server dari brute force. Sekarang kita sambungkan ke Telegram agar kamu mendapat notifikasi realtime setiap kali ada IP yang di-ban.
 
-## Opsi A: Telegram Bot
-
-Telegram adalah pilihan paling mudah karena punya API bot yang stabil dan tidak perlu scanning QR.
-
-### Langkah 1 — Buat Bot Telegram
+## Buat Bot Telegram
 
 1. Buka Telegram, cari `@BotFather`.
 2. Kirim perintah `/newbot`.
-3. Beri nama bot (nama tampil, boleh ada spasi) dan username (harus diakhiri `bot`, tanpa spasi).
+3. Beri nama bot (misal `Server Alert`) dan username (harus diakhiri `bot`, tanpa spasi).
 4. BotFather akan memberikan **API Token** — formatnya seperti `7234567890:AAFxxxxxxxxxxxxxxxxx`. Simpan ini.
 
-### Langkah 2 — Dapatkan User ID Kamu
+## Dapatkan Chat ID Kamu
 
-Cari `@userinfobot` di Telegram dan kirim pesan apapun. Bot itu akan membalas dengan User ID numerik kamu — misal `987654321`.
+Cari `@userinfobot` di Telegram dan kirim pesan apapun. Bot itu akan membalas dengan User ID numerik kamu — misal `987654321`. Catat angka ini.
 
-User ID ini digunakan untuk membatasi akses agent hanya ke akunmu sendiri.
+## Install Script Notifikasi
 
-### Langkah 3 — Konfigurasi di OpenClaw
+Kita buat script sederhana yang membaca event ban dari log Fail2ban dan mengirim notifikasi ke Telegram.
 
-Edit file `.env` di server:
 ```bash
-cd ~/openclaw
-nano .env
+sudo nano /usr/local/bin/fail2ban-telegram.sh
 ```
 
-Tambahkan atau ubah baris berikut:
-```
-TELEGRAM_BOT_TOKEN=7234567890:AAFxxxxxxxxxxxxxxxxx
-TELEGRAM_ALLOWED_USERS=987654321
-```
+Isi dengan:
 
-Untuk mengizinkan lebih dari satu user:
-```
-TELEGRAM_ALLOWED_USERS=987654321,111222333
-```
-
-Simpan, lalu restart agent:
 ```bash
-pm2 restart openclaw
+#!/bin/bash
+TOKEN="7234567890:AAFxxxxxxxxxxxxxxxxx"
+CHAT_ID="987654321"
+
+IP="$1"
+JAIL="$2"
+
+MESSAGE="⚠️ Fail2ban Alert
+IP: $IP
+Jail: $JAIL
+Time: $(date '+%Y-%m-%d %H:%M:%S')"
+
+curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \
+  -d "chat_id=$CHAT_ID" \
+  -d "text=$MESSAGE" \
+  -d "parse_mode=Markdown" > /dev/null
 ```
 
-### Langkah 4 — Test
+Sesuaikan `TOKEN` dan `CHAT_ID` dengan milik kamu. Simpan lalu buat executable:
 
-Buka Telegram, cari bot kamu berdasarkan username-nya, dan kirim `/start`. Jika berhasil, bot akan merespons.
+```bash
+sudo chmod +x /usr/local/bin/fail2ban-telegram.sh
+```
+
+## Hubungkan ke Fail2ban
+
+Fail2ban bisa menjalankan aksi kustom saat terjadi ban. Buat file aksi:
+
+```bash
+sudo nano /etc/fail2ban/action.d/telegram.conf
+```
+
+Isi dengan:
+
+```ini
+[Definition]
+actionban = /usr/local/bin/fail2ban-telegram.sh <ip> <name>
+```
+
+Simpan, lalu tambahkan aksi ini ke jail SSH. Edit `/etc/fail2ban/jail.local`:
+
+```bash
+sudo nano /etc/fail2ban/jail.local
+```
+
+Cari bagian `[sshd]` dan tambahkan:
+
+```ini
+[sshd]
+enabled    = true
+port       = ssh
+logpath    = %(sshd_log)s
+backend    = %(sshd_backend)s
+action     = %(action_)s
+             telegram
+```
+
+Simpan, lalu restart Fail2ban:
+
+```bash
+sudo systemctl restart fail2ban
+```
+
+## Test Notifikasi
+
+Simulasi serangan dengan 5+ percobaan SSH gagal dari IP lain. Dalam beberapa detik, kamu akan menerima notifikasi Telegram:
+
+```
+⚠️ Fail2ban Alert
+IP: 192.168.1.100
+Jail: sshd
+Time: 2026-07-20 14:30:00
+```
+
+## Verifikasi
+
+Cek status Fail2ban dan pastikan jail berjalan:
+
+```bash
+sudo fail2ban-client status sshd
+```
+
+Cek log untuk melihat aksi yang dijalankan:
+
+```bash
+sudo tail -f /var/log/fail2ban.log
+```
 
 ---
 
-## Opsi B: WhatsApp
+## Ringkasan Konfigurasi
 
-WhatsApp lebih rumit karena menggunakan QR scan dan tidak punya API resmi. Sebagian besar library WhatsApp untuk Node.js menggunakan pendekatan reverse-engineering (Baileys, whatsapp-web.js). Ini berarti:
-
-- Risiko akun WhatsApp diblokir jika terdeteksi sebagai bot oleh WhatsApp.
-- Perlu scanning ulang QR setiap beberapa minggu sekali.
-- Library kadang putus saat WhatsApp update protokolnya.
-
-Untuk pemakaian pribadi dengan traffic rendah, risikonya terbilang kecil. Tapi jika keandalan penting, gunakan Telegram.
-
-### Proses Setup WhatsApp
-
-1. Pastikan fitur WhatsApp sudah diaktifkan di `.env` OpenClaw kamu.
-2. Buka tmux session agar bisa melihat output:
-   ```bash
-   tmux attach -t main
-   ```
-3. Jalankan agent dan lihat log:
-   ```bash
-   pm2 logs openclaw
-   ```
-4. Di log, akan muncul QR code berupa karakter ASCII. Scan menggunakan menu **Linked Devices** di aplikasi WhatsApp di HP kamu (Settings → Linked Devices → Link a Device).
-5. Setelah terscan, log akan menampilkan pesan "authenticated" atau sejenisnya.
-
----
-
-## Mengamankan Akses Agent
-
-Pastikan agent hanya merespons pesan dari user yang kamu izinkan. Jangan pernah deploy agent tanpa pembatasan user, terutama jika menggunakan API key berbayar — bot publik yang terbuka bisa menguras kredit kamu dalam hitungan menit jika ditemukan orang lain.
-
-Untuk Telegram, parameter `ALLOWED_USERS` sudah menangani ini. Verifikasi perilakunya dengan mengirim pesan dari akun Telegram lain dan pastikan bot tidak merespons.
-
----
-
-## Setup Selesai
-
-Ini adalah checkpoint terakhir. Konfigurasi yang sudah berjalan:
+Semua komponen yang sudah terpasang:
 
 - Instance ARM di OCI dengan uptime 24/7.
 - Firewall berlapis — Security List OCI + iptables OS.
 - Akses SSH hanya via Tailscale, tidak ada port publik yang terbuka.
-- Agent berjalan di PM2, auto-restart setelah crash atau reboot.
-- Terhubung ke Telegram (atau WhatsApp) untuk kontrol via chat.
+- Fail2ban melindungi SSH dari brute force.
+- Notifikasi Telegram realtime jika ada serangan.
 
 Untuk monitoring jangka panjang, jalankan `htop` sesekali untuk memantau konsumsi CPU dan RAM, dan `ncdu ~` untuk cek penggunaan disk.

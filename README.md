@@ -1,6 +1,6 @@
 # OCI Always Free Tier — Panduan Deployment AI Agent
 
-Panduan lengkap untuk memanfaatkan resource gratis dari Oracle Cloud Infrastructure (OCI), mengamankan akses dengan Tailscale mesh VPN, dan menjalankan AI Agent (OpenClaw) sebagai asisten pribadi 24/7.
+Panduan lengkap untuk memanfaatkan resource gratis dari Oracle Cloud Infrastructure (OCI), mengamankan akses dengan Tailscale mesh VPN, dan melindungi server dengan Fail2ban.
 
 ## Mengapa OCI?
 
@@ -37,10 +37,10 @@ Resource di atas berlaku **selamanya** (bukan 12 bulan seperti AWS Free Tier), s
 5. [Setup Tailscale Mesh VPN](modules/05_TAILSCALE_SETUP.md)
 6. [SSH Tanpa IP Publik](modules/06_SECURE_SSH.md)
 
-### Fase 4: Agent Deployment
+### Fase 4: Server Hardening
 7. [Persiapan Environment (Docker & Node.js)](modules/07_PREPARE_ENV.md)
-8. [Instalasi OpenClaw Agent](modules/08_INSTALL_OPENCLAW.md)
-9. [Integrasi Telegram & WhatsApp](modules/09_MESSAGING_CONNECT.md)
+8. [Instalasi & Konfigurasi Fail2ban](modules/08_FAIL2BAN_SETUP.md)
+9. [Notifikasi Fail2ban via Telegram](modules/09_MESSAGING_CONNECT.md)
 
 ### Fase 5: Terminal UX
 10. [Developer Toolchain (Oh My Bash, RTK, OpenCode, alias-hub, eza, fastfetch)](modules/10_TERMINAL_UX.md)
