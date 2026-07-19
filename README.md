@@ -51,3 +51,9 @@ Resource di atas berlaku **selamanya** (bukan 12 bulan seperti AWS Free Tier), s
 **Catatan**: Selama penggunaan kamu masih di bawah limit Always Free, Oracle tidak akan menagih sepeser pun — bahkan setelah upgrade ke Pay-As-You-Go. Upgrade tersebut justru disarankan untuk stabilitas resource dan menghindari idle reclamation.
 
 Tidak familiar dengan istilah teknis tertentu? Lihat [Glosarium](GLOSARIUM.md).
+
+## Lanjutan
+
+Setelah server siap, lanjutkan ke kursus berikut:
+
+- [**Pi-hole + Tailscale DNS**](https://github.com/1999AZZAR/oci-pihole-adblock) — Adblock 24/7 untuk semua device di mesh network Tailscale, langsung dari OCI.
