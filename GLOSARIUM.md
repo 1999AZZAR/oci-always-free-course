@@ -6,6 +6,9 @@ Kumpulan istilah teknis yang digunakan di seluruh modul kursus ini. Disusun alfa
 
 ## A
 
+**alias-hub**
+Koleksi alias shell modular yang diorganisir per kategori (git, docker, file management, networking). Diinstall dengan clone repo GitHub dan di-source di `.bashrc`. Memberikan shortcut produktif untuk perintah yang sering digunakan.
+
 **Always Free**
 Tier layanan Oracle Cloud yang menyediakan resource komputasi tanpa biaya selama akun aktif. Berbeda dengan free trial (yang punya batas waktu), Always Free tidak kadaluarsa — tapi ada batas resource dan syarat penggunaan aktif.
 
@@ -129,9 +132,15 @@ Kebijakan Oracle yang dapat menghentikan instance ARM jika tidak ada aktivitas C
 **Jail**
 Komponen utama Fail2ban yang mendefinisikan service mana yang diawasi, filter apa yang digunakan untuk mendeteksi serangan, dan aksi apa yang diambil saat terjadi pelanggaran. Contoh: `[sshd]` adalah jail untuk melindungi SSH. Setiap jail bisa punya aturan `maxretry`, `bantime`, dan `findtime` sendiri.
 
+**JSONC** (JSON with Comments)
+Varian JSON yang mengizinkan komentar menggunakan `//` atau `/* */`. Standar JSON tidak mendukung komentar. File konfigurasi modern seperti `opencode.jsonc` dan `config.jsonc` menggunakan format ini agar bisa menyertakan penjelasan di dalam file konfigurasi.
+
 ---
 
 ## L
+
+**LSP** (Language Server Protocol)
+Protokol standar yang memungkinkan editor dan AI coding agent memahami kode secara mendalam — autocomplete, go-to-definition, find references, diagnosa error. OpenCode menggunakan LSP untuk menganalisis struktur project tanpa harus mengirim seluruh file ke model AI.
 
 **LTS**
 *Long Term Support*. Rilis software yang mendapat dukungan dan patch keamanan dalam jangka panjang (biasanya 5–10 tahun). Ubuntu 22.04 LTS dan 24.04 LTS adalah contohnya. Disarankan untuk server produksi.
@@ -185,6 +194,9 @@ Tier akun OCI di atas Always Free. Memberikan akses ke semua layanan OCI dengan 
 **PM2**
 Process Manager untuk Node.js. Menjaga aplikasi tetap berjalan di background, auto-restart jika crash, dan konfigurasi auto-start setelah reboot.
 
+**Powerline**
+Framework prompt untuk terminal yang menampilkan informasi seperti git branch, exit code, dan status direktori dalam bentuk segmented bar. Tema Oh My Bash seperti `powerline-multiline` menggunakan Powerline. Membutuhkan Nerd Font di terminal client agar ikonnya tampil benar.
+
 **Private Key**
 File kriptografi yang digunakan untuk autentikasi SSH. Pasangannya adalah public key yang disimpan di server. File ini harus dijaga kerahasiaannya dan tidak boleh dibagikan. Permission yang benar: `chmod 400`.
 
@@ -204,6 +216,12 @@ CLI proxy yang mengkompresi output perintah shell sebelum masuk ke context AI. M
 
 **Security List**
 Firewall di level subnet OCI. Aturan di Security List berlaku untuk semua instance dalam subnet tersebut. Salah satu dari dua lapisan firewall yang harus dikonfigurasi (lapisan lain: iptables di OS).
+
+**Shell Alias**
+Shortcut untuk perintah panjang yang didefinisikan di shell. Contoh: `alias ll='ls -la'` membuat kamu cukup mengetik `ll` saja. alias-hub adalah kumpulan alias siap pakai untuk git, docker, dan lainnya.
+
+**Source** (perintah `source`)
+Perintah shell yang menjalankan file skrip di dalam shell saat ini (bukan di subshell terpisah). Berbeda dengan menjalankan `bash script.sh`, `source` membuat semua variabel dan fungsi dari file tersebut tersedia di session shell yang sedang aktif. Contoh: `source ~/.bashrc` menerapkan perubahan konfigurasi tanpa harus login ulang.
 
 **Serial Console**
 Fitur konsol OCI yang menyediakan akses langsung ke instance layaknya monitor dan keyboard fisik. Dapat diakses dari halaman detail instance di konsol OCI. Emergency access terakhir jika SSH bermasalah dan Tailscale tidak bisa dijangkau.
