@@ -43,7 +43,8 @@ Resource di atas berlaku **selamanya** (bukan 12 bulan seperti AWS Free Tier), s
 9. [Notifikasi Fail2ban via Telegram](modules/09_MESSAGING_CONNECT.md)
 
 ### Fase 5: Terminal UX
-10. [Developer Toolchain (Oh My Bash, RTK, OpenCode, alias-hub, eza, fastfetch)](modules/10_TERMINAL_UX.md)
+10. [OpenCode — AI Coding Agent](modules/10_OPENCODE_SETUP.md)
+11. [Terminal Enhancement Toolkit](modules/11_TERMINAL_ENHANCEMENT.md)
 
 ---
 
