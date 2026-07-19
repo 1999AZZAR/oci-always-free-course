@@ -37,6 +37,9 @@ Penyimpanan berbasis blok di OCI, setara dengan hard disk virtual. Bisa di-attac
 **Boot Volume**
 Block volume khusus yang menyimpan sistem operasi instance. Saat instance dihapus, boot volume bisa dipertahankan untuk backup atau migrasi ke instance baru.
 
+**Brute Force**
+Serangan siber dengan cara mencoba banyak kombinasi username dan password secara otomatis sampai menemukan yang cocok. Fail2ban mencegah ini dengan memblokir IP setelah sejumlah percobaan gagal dalam jangka waktu tertentu.
+
 ---
 
 ## C
@@ -69,6 +72,9 @@ Tool untuk mendefinisikan dan menjalankan aplikasi multi-container. Konfigurasi 
 
 **eza**
 Pengganti modern untuk perintah `ls`. Mendukung warna, ikon (dengan Nerd Font), tree view, dan tampilan metadata yang lebih informatif. Ditulis dalam Rust.
+
+**Egress Rule**
+Aturan firewall yang mengizinkan traffic keluar dari instance ke luar. Dikonfigurasi di OCI Security List. Lawan dari ingress rule (traffic masuk). Secara default, semua egress diizinkan di OCI.
 
 ---
 
@@ -113,6 +119,23 @@ Firewall bawaan Linux kernel. OCI Ubuntu image datang dengan iptables yang sudah
 **iSCSI**
 *Internet Small Computer System Interface*. Protokol yang digunakan OCI untuk menghubungkan boot volume ke instance melalui jaringan. Jika koneksi iSCSI putus (misal karena iptables di-flush), instance bisa tidak bisa boot.
 
+**Idle Reclamation**
+Kebijakan Oracle yang dapat menghentikan instance ARM jika tidak ada aktivitas CPU yang signifikan selama 30 hari berturut-turut. Upgrade ke akun Pay-As-You-Go (meski tetap dalam limit Always Free) biasanya mencegah hal ini. Sumber frustrasi utama pengguna OCI Free Tier.
+
+---
+
+## J
+
+**Jail**
+Komponen utama Fail2ban yang mendefinisikan service mana yang diawasi, filter apa yang digunakan untuk mendeteksi serangan, dan aksi apa yang diambil saat terjadi pelanggaran. Contoh: `[sshd]` adalah jail untuk melindungi SSH. Setiap jail bisa punya aturan `maxretry`, `bantime`, dan `findtime` sendiri.
+
+---
+
+## L
+
+**LTS**
+*Long Term Support*. Rilis software yang mendapat dukungan dan patch keamanan dalam jangka panjang (biasanya 5–10 tahun). Ubuntu 22.04 LTS dan 24.04 LTS adalah contohnya. Disarankan untuk server produksi.
+
 ---
 
 ## M
@@ -123,6 +146,9 @@ Jenis VPN di mana setiap perangkat terhubung langsung ke perangkat lain (peer-to
 ---
 
 ## N
+
+**NAT**
+*Network Address Translation*. Teknik networking yang memungkinkan banyak perangkat dalam jaringan lokal menggunakan satu alamat IP publik untuk mengakses internet. NAT adalah alasan mengapa koneksi peer-to-peer Tailscale kadang harus melalui relay DERP — karena perangkat di belakang NAT tidak memiliki IP publik yang bisa diakses langsung.
 
 **ncdu**
 *NCurses Disk Usage*. Tool interaktif untuk menganalisis penggunaan disk per direktori. Berguna untuk menemukan file besar yang menghabiskan storage. Install via `apt install ncdu`.
@@ -139,6 +165,9 @@ Font yang sudah dipatch dengan ikon tambahan (ikon file, git, OS, dll.). Digunak
 
 **OCPU**
 *Oracle Compute Unit*. Satuan CPU yang digunakan OCI. 1 OCPU setara dengan 2 vCPU (virtual CPU). Ampere A1 menggunakan OCPU sebagai satuan.
+
+**OCI Cloud Shell**
+Terminal berbasis browser yang disediakan Oracle di konsol OCI. Berjalan di instance kecil yang dikelola Oracle, sudah terautentikasi dengan tenancy kamu. Berguna sebagai akses darurat jika SSH dari laptop tidak bisa digunakan.
 
 **Oh My Bash**
 Framework shell yang menambahkan tema, plugin, dan autocompletion ke bash. Diinstall di atas bash yang sudah ada tanpa mengganti shell.
@@ -176,6 +205,12 @@ CLI proxy yang mengkompresi output perintah shell sebelum masuk ke context AI. M
 **Security List**
 Firewall di level subnet OCI. Aturan di Security List berlaku untuk semua instance dalam subnet tersebut. Salah satu dari dua lapisan firewall yang harus dikonfigurasi (lapisan lain: iptables di OS).
 
+**Serial Console**
+Fitur konsol OCI yang menyediakan akses langsung ke instance layaknya monitor dan keyboard fisik. Dapat diakses dari halaman detail instance di konsol OCI. Emergency access terakhir jika SSH bermasalah dan Tailscale tidak bisa dijangkau.
+
+**Shape**
+Istilah OCI untuk "tipe instance" — menentukan jumlah CPU, RAM, dan resource lain. Contoh: `VM.Standard.A1.Flex` (ARM Ampere, fleksibel), `VM.Standard.E2.1.Micro` (AMD micro). Shape menentukan harga dan ketersediaan di suatu region.
+
 **SSH**
 *Secure Shell*. Protokol untuk akses remote ke server secara terenkripsi. Default port 22. Gunakan private key untuk autentikasi, bukan password.
 
@@ -184,6 +219,9 @@ File konfigurasi client SSH. Memungkinkan pembuatan alias untuk koneksi SSH — 
 
 **Subnet**
 Subdivisi dari VCN. Instance OCI dibuat di dalam subnet. Ada dua jenis: public subnet (instance bisa dapat IP publik) dan private subnet (hanya bisa diakses dari dalam VCN).
+
+**Systemd**
+Init system dan service manager bawaan Ubuntu. PID 1 — proses pertama yang berjalan saat sistem boot. Digunakan untuk mengelola service (start, stop, restart, enable/disable auto-start). Perintah utama: `systemctl`. Fail2ban, SSH, dan Docker semuanya berjalan sebagai service systemd.
 
 ---
 
