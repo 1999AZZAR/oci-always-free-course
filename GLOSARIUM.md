@@ -74,6 +74,9 @@ Pengganti modern untuk perintah `ls`. Mendukung warna, ikon (dengan Nerd Font), 
 
 ## F
 
+**Fail2ban**
+Framework untuk mencegah serangan brute force dengan cara memonitor log service (seperti SSH) dan secara otomatis memblokir alamat IP yang menunjukkan perilaku mencurigakan menggunakan aturan iptables. Dijalankan sebagai systemd service.
+
 **fastfetch**
 Tool untuk menampilkan informasi sistem (OS, CPU, RAM, uptime, dll.) di terminal saat login. Pengganti aktif untuk neofetch yang sudah tidak dikembangkan. Ditulis dalam C, jauh lebih cepat dari neofetch.
 
@@ -142,9 +145,6 @@ Framework shell yang menambahkan tema, plugin, dan autocompletion ke bash. Diins
 
 **OpenCode**
 AI coding agent open-source berbasis terminal. Menyediakan TUI (Terminal User Interface) untuk berinteraksi dengan model AI dalam konteks kode. Mendukung 75+ provider.
-
-**OpenClaw**
-AI Agent yang digunakan dalam kursus ini sebagai contoh deployment. Dijalankan via PM2 dan terhubung ke Telegram atau WhatsApp.
 
 ---
 
